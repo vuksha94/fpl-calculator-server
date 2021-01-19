@@ -1,38 +1,28 @@
 package com.springboot.fplcalculatorserver.entities;
 
-import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
-public class Role {
-
+public class UserDetails {
   @Id
   @GeneratedValue
   private long id;
-	
-  @Column(nullable = false)
-  private String role;
-	
-  @JsonBackReference /* @JsonIgnore */
-  @ManyToMany(mappedBy = "roles",cascade = CascadeType.ALL)
-  private List<User> users;
-
-  @Override
-  public String toString() {
-    return "Role [id=" + id + ", role=" + role + "]";
-  }
-	
+  
+  @JsonBackReference
+  @OneToOne(mappedBy = "details", cascade = CascadeType.ALL)
+  private User user;
 }

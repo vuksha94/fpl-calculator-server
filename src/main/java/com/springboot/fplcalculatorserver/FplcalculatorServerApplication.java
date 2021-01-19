@@ -1,39 +1,36 @@
 package com.springboot.fplcalculatorserver;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-
+import com.springboot.fplcalculatorserver.accessingdatajpa.ProjectRepository;
+import com.springboot.fplcalculatorserver.accessingdatajpa.RoleRepository;
+import com.springboot.fplcalculatorserver.accessingdatajpa.UserDetailsRepository;
 import com.springboot.fplcalculatorserver.accessingdatajpa.UserRepository;
-import com.springboot.fplcalculatorserver.entities.User;
-import com.springboot.fplcalculatorserver.models.MyUserDetails;
 
 @SpringBootApplication
+//@EnableCaching
 public class FplcalculatorServerApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//userRepository.save(new User("stefan", "123", "Stefan", "Vukasinovic"));
-		
-		final Optional<User> user = userRepository.findByEmail("stefan");
-		/*
-		 * user.get().setActive(false); user.get().setName("Stefan");
-		 * userRepository.save(user.get());
-		 */
-		System.out.println("findByUserName: " + user);
-		//System.out.println(user.get().getRoles());
-		System.out.println(new MyUserDetails(user.get()));
-		
 	}
 
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	RoleRepository roleRepository;
+	@Autowired
+	UserDetailsRepository userDetailsRepository;
+	@Autowired
+	ProjectRepository projectRepository;
+	
 	
 	public static void main(String[] args) {
 		SpringApplication.run(FplcalculatorServerApplication.class, args);
@@ -49,6 +46,9 @@ public class FplcalculatorServerApplication implements CommandLineRunner {
 		return WebClient.builder();
 	}
 	
-	
+	@Bean
+    public CacheManager alternateCacheManager() {
+        return new ConcurrentMapCacheManager();
+    }
 
 }

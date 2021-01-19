@@ -3,11 +3,9 @@ package com.springboot.fplcalculatorserver.models;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import com.springboot.fplcalculatorserver.entities.Role;
 import com.springboot.fplcalculatorserver.entities.User;
 
@@ -17,12 +15,15 @@ public class MyUserDetails implements UserDetails {
 	private String password;
 	private List<GrantedAuthority> roles;
 	private boolean active;
-
+	
+	private User user;
+	
 	public MyUserDetails(User user) {
 		email = user.getEmail();
 		password= user.getPassword();
 		roles = getRolesFromUser(user.getRoles());
 		active = user.isActive();
+		this.user = user;
 	}
 	
 	private List<GrantedAuthority> getRolesFromUser(List<Role> roles) {
@@ -31,6 +32,11 @@ public class MyUserDetails implements UserDetails {
 			.map(SimpleGrantedAuthority::new)
 			.collect(Collectors.toList());
 	}
+
+	public User getUser() {
+		return user;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles;
@@ -71,6 +77,4 @@ public class MyUserDetails implements UserDetails {
 		return "MyUserDetails [email=" + email + ", password=" + password + ", roles=" + roles + ", active=" + active
 				+ "]";
 	}
-	
-
 }
